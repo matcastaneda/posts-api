@@ -1,6 +1,6 @@
-import type { IReqPagination, IPostPagination } from '../types';
+import type { IReqPagination, IPostPaginationReturned } from '../types';
 
-const createPagination = ({ docs, totalDocs, page, limit }: IReqPagination): IPostPagination => {
+const createPagination = ({ docs, totalDocs, page, limit }: IReqPagination): IPostPaginationReturned => {
   const totalPages = Math.ceil(totalDocs / limit);
   const hasPrevPage = page > 1;
   const hasNextPage = page < totalPages;

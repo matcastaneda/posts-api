@@ -15,7 +15,7 @@ export interface IFile {
   md5: string;
 }
 
-export interface IPostPagination {
+export interface IPostPaginationReturned {
   posts: IPost[];
   totalDocs: number;
   totalPages: number;

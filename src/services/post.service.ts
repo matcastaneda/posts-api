@@ -1,8 +1,8 @@
 import { Post } from '../models/Post';
-import type { IPost, IPostPagination, TQueryPagination } from '../types';
+import type { IPost, IPostPaginationReturned, TQueryPagination } from '../types';
 import { createPagination } from '../utils/createPagination';
 
-const getAll = async (query?: TQueryPagination): Promise<IPostPagination> => {
+const getAll = async (query?: TQueryPagination): Promise<IPostPaginationReturned> => {
   const { page, limit } = query ?? {};
 
   const skip = (page - 1) * limit;
