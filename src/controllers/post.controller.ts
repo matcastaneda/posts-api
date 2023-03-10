@@ -3,18 +3,28 @@ import { remove as removeFile } from 'fs-extra';
 
 import { removeImage, uploadImage } from '../lib/cloudinary';
 import postService from '../services/post.service';
-import { type IFile } from '../types';
+import type { IFile, TQueryPagination } from '../types';
+import { sanitizeQuery } from '../utils/sanitizeQuery';
 
-const getAll = async (_: Request, res: Response, next: NextFunction) => {
+// TODO: Add cache to getAll with Redis
+const getAll = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const posts = await postService.getAll();
+    const { page, limit } = req.query;
 
-    return res.status(200).json(posts);
+    const sanitizedPage = sanitizeQuery(page as string) || 1;
+    const sanitizedLimit = sanitizeQuery(limit as string) || 10;
+
+    const query: TQueryPagination = { page: sanitizedPage, limit: sanitizedLimit };
+
+    const posts = await postService.getAll(query);
+
+    res.status(200).json(posts);
   } catch (error) {
     next(error);
   }
 };
 
+// TODO: Add cache to getOne with Redis
 const getOne = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { id } = req.params;
