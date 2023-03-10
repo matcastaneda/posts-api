@@ -14,3 +14,22 @@ export interface IFile {
   mimetype: string;
   md5: string;
 }
+
+export interface IPostPagination {
+  posts: IPost[];
+  totalDocs: number;
+  totalPages: number;
+  itemsPerPage: number;
+  currentPage: number;
+  hasNextPage: boolean;
+  hasPrevPage: boolean;
+}
+
+export interface IReqPagination {
+  docs: IPost[];
+  totalDocs: number;
+  page: number;
+  limit: number;
+}
+
+export type TQueryPagination = Pick<IQueryPagination, 'page' | 'limit'>;
