@@ -1,4 +1,4 @@
-# :wave: Welcome to REST API Posts With MongoDB and Cloudinary
+# :wave: Welcome to the POST API
 
 > _:open_file_folder: This repository contains the source code of **[Post-Mongo-Cloudinary-API](https://github.com/matcastaneda/posts-mongo-cloudinary-api)**. :open_file_folder:_
 
