@@ -2,14 +2,14 @@ import { Post } from '../models/Post';
 import type { IPost, IPostPaginationReturned, TQueryPagination } from '../types';
 import { createPagination } from '../utils/createPagination';
 
-const getAll = async (query?: TQueryPagination): Promise<IPostPaginationReturned> => {
+const getAll = async (userId: string, query?: TQueryPagination): Promise<IPostPaginationReturned> => {
   const { page, limit } = query ?? {};
 
   const skip = (page - 1) * limit;
 
   const [posts, totalDocs] = await Promise.all([
-    Post.find({}).sort({ createdAt: 'desc' }).skip(skip).limit(limit).lean().exec(),
-    Post.countDocuments({}),
+    Post.find({ userId }).sort({ createdAt: 'desc' }).skip(skip).limit(limit).lean().exec(),
+    Post.countDocuments({ userId }),
   ]);
 
   const docs = posts.map(({ _id, ...rest }) => ({
@@ -22,7 +22,7 @@ const getAll = async (query?: TQueryPagination): Promise<IPostPaginationReturned
   return paginatedPosts;
 };
 
-const getOne = async (id: string) => await Post.findOne({ _id: id });
+const getOne = async (id: string, userId: string) => await Post.findOne({ _id: id, userId });
 
 const create = async (post: IPost) => await Post.create(post);
 

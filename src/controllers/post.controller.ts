@@ -6,17 +6,17 @@ import postService from '../services/post.service';
 import type { IFile, TQueryPagination } from '../types';
 import { sanitizeQuery } from '../utils/sanitizeQuery';
 
-// TODO: Add cache to getAll with Redis
 const getAll = async (req: Request, res: Response, next: NextFunction) => {
-  try {
-    const { page, limit } = req.query;
+  const { page, limit } = req.query;
+  const { userId } = req.user;
 
+  try {
     const sanitizedPage = sanitizeQuery(page as string) || 1;
     const sanitizedLimit = sanitizeQuery(limit as string) || 10;
 
     const query: TQueryPagination = { page: sanitizedPage, limit: sanitizedLimit };
 
-    const posts = await postService.getAll(query);
+    const posts = await postService.getAll(userId, query);
 
     res.status(200).json(posts);
   } catch (error) {
@@ -24,11 +24,12 @@ const getAll = async (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
-// TODO: Add cache to getOne with Redis
 const getOne = async (req: Request, res: Response, next: NextFunction) => {
+  const { id } = req.params;
+  const { userId } = req.user;
+
   try {
-    const { id } = req.params;
-    const post = await postService.getOne(id);
+    const post = await postService.getOne(id, userId);
 
     if (!post) return res.status(404).json({ message: 'Post not found' });
 
@@ -39,14 +40,15 @@ const getOne = async (req: Request, res: Response, next: NextFunction) => {
 };
 
 const create = async (req: Request, res: Response, next: NextFunction) => {
+  const { title, content } = req.body;
+  const { userId } = req.user;
+
   try {
-    let { title, content } = req.body;
-    
     if (!title) return res.status(400).json({ message: 'Title is required' });
     if (!content) return res.status(400).json({ message: 'Content is required' });
-    
+
     let image = null;
-    
+
     if (req.files?.image) {
       const { tempFilePath }: IFile = req.files?.image as IFile;
       const { public_id, secure_url } = await uploadImage(tempFilePath);
@@ -55,7 +57,7 @@ const create = async (req: Request, res: Response, next: NextFunction) => {
       image = { public_id, secure_url };
     }
 
-    const post = await postService.create({ title, content, image });
+    const post = await postService.create({ title, content, image, userId });
     return res.status(201).json(post);
   } catch (error) {
     next(error);
@@ -63,12 +65,13 @@ const create = async (req: Request, res: Response, next: NextFunction) => {
 };
 
 const update = async (req: Request, res: Response, next: NextFunction) => {
-  try {
-    const { id } = req.params;
-    const { title, content } = req.body;
-    let image = null;
+  const { id } = req.params;
+  const { title, content } = req.body;
+  const { userId } = req.user;
+  let image = null;
 
-    const post = await postService.getOne(id);
+  try {
+    const post = await postService.getOne(id, userId);
 
     if (!post) return res.status(404).json({ message: 'Post not found' });
 
@@ -81,9 +84,9 @@ const update = async (req: Request, res: Response, next: NextFunction) => {
       if (post.image?.public_id) {
         await removeImage(post.image.public_id);
       }
-    }
+    } //640ca1aec20df9435f133ac7
 
-    const updatedPost = await postService.update(id, { title, content, image });
+    const updatedPost = await postService.update(id, { title, content, image, userId });
 
     return res.status(200).json(updatedPost);
   } catch (error) {
@@ -92,9 +95,9 @@ const update = async (req: Request, res: Response, next: NextFunction) => {
 };
 
 const remove = async (req: Request, res: Response, next: NextFunction) => {
-  try {
-    const { id } = req.params;
+  const { id } = req.params;
 
+  try {
     const post = await postService.remove(id);
 
     if (!post) return res.status(404).json({ message: 'Post not found' });
