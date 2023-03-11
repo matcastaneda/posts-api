@@ -1,5 +1,11 @@
 # :wave: Welcome to the POST API
 
+![version](https://img.shields.io/github/package-json/v/matcastaneda/posts-api?style=flat-square)
+![GitHub](https://img.shields.io/github/license/matcastaneda/posts-api?style=flat-square)
+![issues](https://img.shields.io/github/issues/matcastaneda/posts-api?style=flat-square)
+![pull requests](https://img.shields.io/github/issues-pr/matcastaneda/posts-api?style=flat-square)
+![GitHub Repo stars](https://img.shields.io/github/stars/matcastaneda/posts-api?style=social)
+
 > _:open_file_folder: This repository contains the source code of **[Post-Mongo-Cloudinary-API](https://github.com/matcastaneda/posts-mongo-cloudinary-api)**. :open_file_folder:_
 
 The API uses `MongoDB` to store the post data and `Express` as the framework to build it. In addition, it uses `Cloudinary` as the image storage and processing service for posts.
