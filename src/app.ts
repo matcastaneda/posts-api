@@ -4,7 +4,7 @@ import morgan from 'morgan';
 import fileUpload from 'express-fileupload';
 
 import router from './routes';
-import { handleError } from './middlewares/handleError';
+import { handleError } from './middlewares/handleError.middleware';
 
 const app = express();
 
