@@ -1,5 +1,5 @@
 import { Schema, model } from 'mongoose';
-import { type IPost } from '../types';
+import type { IPost } from '../types';
 
 const postSchema = new Schema<IPost>(
   {
@@ -9,6 +9,7 @@ const postSchema = new Schema<IPost>(
       public_id: String,
       secure_url: String,
     },
+    userId: { type: Schema.Types.ObjectId, ref: 'User' } as any,
   },
   {
     timestamps: true,

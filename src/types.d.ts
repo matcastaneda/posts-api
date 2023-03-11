@@ -1,10 +1,27 @@
-export interface IPost {
+import type { Request } from 'express';
+import type { JwtPayload } from 'jsonwebtoken';
+import type { Document, Model } from 'mongoose';
+
+interface IUserDecoded extends JwtPayload {
+  userId: string;
+}
+
+declare global {
+  namespace Express {
+    interface Request {
+      user?: IUserDecoded;
+    }
+  }
+}
+
+interface IPost {
   title: string;
   content: string;
   image?: { public_id: string; secure_url: string } | null;
+  userId: string;
 }
 
-export interface IFile {
+interface IFile {
   name: string;
   data: Buffer;
   size: number;
@@ -15,7 +32,7 @@ export interface IFile {
   md5: string;
 }
 
-export interface IPostPaginationReturned {
+interface IPostPaginationReturned {
   posts: IPost[];
   totalDocs: number;
   totalPages: number;
@@ -25,11 +42,19 @@ export interface IPostPaginationReturned {
   hasPrevPage: boolean;
 }
 
-export interface IReqPagination {
+interface IReqPagination {
   docs: IPost[];
   totalDocs: number;
   page: number;
   limit: number;
 }
 
-export type TQueryPagination = Pick<IQueryPagination, 'page' | 'limit'>;
+type TQueryPagination = Pick<IQueryPagination, 'page' | 'limit'>;
+
+interface IUser extends Document {
+  name: string;
+  email: string;
+  password: string;
+}
+
+type TAuth = Pick<IUser, 'email' | 'password'>;
